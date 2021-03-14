@@ -1,6 +1,6 @@
 const ApiError = require('../services/ApiError');
 const bcrypt = require('bcrypt')
-const User = require('../models/userModel')
+const User = require('../models/UserModel')
 const JwtGenerator = require("../services/JwtGenerator");
 const {validationResult} = require("express-validator");
 
