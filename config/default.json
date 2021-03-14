@@ -1,0 +1,4 @@
+{
+  "dbUrl": "mongodb+srv://admin:p6kANxlCA7vPzioT@cluster0.90gj0.mongodb.net/online-store?retryWrites=true&w=majority",
+  "secretKey": "123456"
+}

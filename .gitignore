@@ -1,0 +1,7 @@
+.idea
+
+/coverage
+
+/build
+
+/server/node_modules
