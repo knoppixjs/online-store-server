@@ -1,6 +1,6 @@
 const ApiError = require('../services/ApiError');
-const config = require("config")
 const jwt = require('jsonwebtoken')
+const JwtGenerator = require("../services/JwtGenerator");
 
 module.exports = function (req, res, next) {
     if (req.method === "OPTIONS") {
@@ -11,7 +11,7 @@ module.exports = function (req, res, next) {
         if (!token) {
             return next(ApiError.forbidden('Не авторизован'))
         }
-        req.user = jwt.verify(token, config.get("secretKey"))
+        req.user = jwt.verify(token, JwtGenerator.key)
         next()
     } catch (e) {
         return next(ApiError.forbidden('Не авторизован'))

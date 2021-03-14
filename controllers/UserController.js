@@ -6,7 +6,7 @@ class UserController {
     async getById(req, res, next) {
         try {
             const {id} = req.params
-            const user = await User.findOne({_id: id})
+            const user = await User.findOne({_id: id}, 'email name')
             if (!user) {
                 return next(ApiError.internal('Пользователь не найден'))
             }
@@ -18,7 +18,7 @@ class UserController {
 
     async getAll(req, res, next) {
         try {
-            const users = await User.find()
+            const users = await User.find({}, 'email name')
             return res.json(users)
         } catch (e) {
             next(ApiError.internal('Ошибка сервера'))
