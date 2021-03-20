@@ -1,16 +1,16 @@
 const ApiError = require('../services/ApiError');
-const Category = require('../models/CategoryModel')
+const Brand = require('../models/BrandModel')
 
 
-class CategoryController {
+class BrandController {
     async getById(req, res, next) {
         try {
             const {id} = req.params
-            const category = await Category.findById(id)
-            if (!category) {
-                return next(ApiError.internal('Категория не найдена'))
+            const brand = await Brand.findById(id)
+            if (!brand) {
+                return next(ApiError.internal('Бренд не найден'))
             }
-            return res.json(category)
+            return res.json(brand)
         } catch (e) {
             next(ApiError.internal('Ошибка сервера'))
         }
@@ -18,8 +18,9 @@ class CategoryController {
 
     async getAll(req, res, next) {
         try {
-            const categories = await Category.find()
-            return res.json(categories)
+            const brands = await Brand.find()
+
+            return res.json(brands)
         } catch (e) {
             next(ApiError.internal('Ошибка сервера'))
         }
@@ -29,9 +30,10 @@ class CategoryController {
         try {
             const {name} = req.body
 
-            const category = new Category({name})
-            await category.save()
-            return res.json(category)
+            const brand = new Brand({name})
+            await brand.save()
+
+            return res.json(brand)
         } catch (e) {
             next(ApiError.internal('Ошибка сервера'))
         }
@@ -39,4 +41,4 @@ class CategoryController {
 
 }
 
-module.exports = new CategoryController()
+module.exports = new BrandController()
