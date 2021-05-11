@@ -13,4 +13,6 @@ router.post('/login', [
     check('password', 'Пароль должен содержать минимум 6 символов').isLength({min: 6})
 ], authController.login)
 
+router.get('/logout', authController.logout)
+
 module.exports = router

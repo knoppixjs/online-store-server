@@ -5,11 +5,12 @@ const User = require('../models/UserModel')
 class UserController {
     async getById(req, res, next) {
         try {
-            const {id} = req.params
-            const user = await User.findOne({_id: id}, 'email name')
-            if (!user) {
+            if (!req.user) {
                 return next(ApiError.internal('Пользователь не найден'))
             }
+            const {id} = req.user
+            const user = await User.findOne({_id: id}, 'email name')
+
             return res.json(user)
         } catch (e) {
             next(ApiError.internal('Ошибка сервера'))

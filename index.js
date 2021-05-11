@@ -1,4 +1,5 @@
 const express = require('express')
+const cookieParser = require('cookie-parser');
 const config = require("config")
 const mongoose = require("mongoose")
 const cors = require('cors')
@@ -8,8 +9,13 @@ const errorHandler = require('./middleware/ErrorHandlingMiddleware')
 
 const PORT = 5000
 
+
 const app = express()
-app.use(cors())
+app.use(cors({
+    origin: "http://localhost:4200",
+    credentials: true,
+}))
+app.use(cookieParser());
 app.use(express.json())
 app.use(fileUpload({}))
 app.use('/api', router)

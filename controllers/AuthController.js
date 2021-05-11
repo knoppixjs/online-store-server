@@ -24,6 +24,7 @@ class AuthController {
             await user.save()
 
             const token = JwtGenerator.generate(user._id, user.email)
+            res.cookie('token', token, {httpOnly: true});
             return res.json({token})
         } catch (e) {
             next(ApiError.internal('Ошибка сервера'))
@@ -50,7 +51,18 @@ class AuthController {
             }
 
             const token = JwtGenerator.generate(user._id, user.email)
-            return res.json({token})
+            res.cookie('token', token, {httpOnly: true});
+
+            return res.json({email: user.email, name: user.name})
+        } catch (e) {
+            next(ApiError.internal('Ошибка сервера'))
+        }
+    }
+
+    async logout(req, res, next) {
+        try {
+            res.cookie('token', '', {maxAge: 0});
+            return res.json()
         } catch (e) {
             next(ApiError.internal('Ошибка сервера'))
         }
