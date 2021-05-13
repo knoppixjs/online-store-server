@@ -1,9 +1,9 @@
 const express = require('express')
+const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const config = require("config")
 const mongoose = require("mongoose")
 const cors = require('cors')
-const fileUpload = require('express-fileupload')
 const router = require('./routes')
 const errorHandler = require('./middleware/ErrorHandlingMiddleware')
 
@@ -11,13 +11,13 @@ const PORT = 5000
 
 
 const app = express()
+app.use(helmet());
 app.use(cors({
-    origin: "http://localhost:4200",
+    origin: "http://localhost:3000",
     credentials: true,
 }))
 app.use(cookieParser());
 app.use(express.json())
-app.use(fileUpload({}))
 app.use('/api', router)
 
 app.use(errorHandler)
@@ -35,6 +35,5 @@ const start = async () => {
         console.log(e)
     }
 }
-
 
 start()

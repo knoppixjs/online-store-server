@@ -2,6 +2,8 @@ const Router = require('express')
 const router = new Router()
 const authController = require('../controllers/AuthController')
 const {check} = require("express-validator")
+const csrfProtectionMiddleware = require('../middleware/CsrfProtectionMiddleware')
+const authMiddleware = require('../middleware/AuthMiddleware')
 
 router.post('/registration', [
     check('email', 'Некорректный email').isEmail(),
@@ -14,5 +16,7 @@ router.post('/login', [
 ], authController.login)
 
 router.get('/logout', authController.logout)
+
+router.get('/user', authMiddleware, csrfProtectionMiddleware, authController.getUser)
 
 module.exports = router

@@ -1,9 +1,8 @@
 const ApiError = require('../services/ApiError');
 const bcrypt = require('bcrypt')
 const User = require('../models/UserModel')
-const JwtGenerator = require("../services/JwtGenerator");
+const JwtApi = require("../services/JwtApi");
 const {validationResult} = require("express-validator");
-
 
 class AuthController {
     async registration(req, res, next) {
@@ -23,9 +22,10 @@ class AuthController {
             const user = new User({email, password: hashPassword, name})
             await user.save()
 
-            const token = JwtGenerator.generate(user._id, user.email)
-            res.cookie('token', token, {httpOnly: true});
-            return res.json({token})
+            const token = JwtApi.encode(user._id)
+            res.cookie('X-AUTH-TOKEN', token, {httpOnly: true, maxAge: 24 * 3600});
+
+            return res.json({id: user._id, email, name})
         } catch (e) {
             next(ApiError.internal('Ошибка сервера'))
         }
@@ -50,10 +50,10 @@ class AuthController {
                 return next(ApiError.badRequest('Указан неверный пароль'))
             }
 
-            const token = JwtGenerator.generate(user._id, user.email)
-            res.cookie('token', token, {httpOnly: true});
+            const token = JwtApi.encode(user._id)
+            res.cookie('X-AUTH-TOKEN', token, {httpOnly: true, maxAge: 24 * 3600});
 
-            return res.json({email: user.email, name: user.name})
+            return res.json({id: user._id, email, name: user.name})
         } catch (e) {
             next(ApiError.internal('Ошибка сервера'))
         }
@@ -61,8 +61,25 @@ class AuthController {
 
     async logout(req, res, next) {
         try {
-            res.cookie('token', '', {maxAge: 0});
+            res.cookie('X-AUTH-TOKEN', '', {httpOnly: true, maxAge: 0});
             return res.json()
+        } catch (e) {
+            next(ApiError.internal('Ошибка сервера'))
+        }
+    }
+
+    async getUser(req, res, next) {
+        try {
+            if (!req.user) {
+                return next(ApiError.internal('Пользователь не найден'))
+            }
+
+            const {id} = req.user
+            const user = await User.findOne({_id: id}, 'email name')
+
+            res.cookie('XSRF-TOKEN', req.csrfToken());
+
+            return res.json({...user})
         } catch (e) {
             next(ApiError.internal('Ошибка сервера'))
         }
