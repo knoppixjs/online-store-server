@@ -84,6 +84,11 @@ class AuthController {
             next(ApiError.internal('Ошибка сервера'))
         }
     }
+
+    async getCsrfToken(req, res) {
+        res.cookie('XSRF-TOKEN', req.csrfToken());
+        return res.json()
+    }
 }
 
 module.exports = new AuthController()

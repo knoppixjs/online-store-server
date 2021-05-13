@@ -17,6 +17,8 @@ router.post('/login', [
 
 router.get('/logout', authController.logout)
 
-router.get('/user', authMiddleware, csrfProtectionMiddleware, authController.getUser)
+router.get('/csrf-token', authMiddleware, csrfProtectionMiddleware, authController.getCsrfToken)
+
+router.get('/user', authMiddleware, authController.getUser)
 
 module.exports = router
